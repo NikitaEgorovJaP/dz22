@@ -1,0 +1,62 @@
+public static boolean isDigits(String login) {
+        char[] arr = login.toCharArray();
+        for (char c : arr) {
+            if (Character.isDigit(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static class AntiCheat {
+        public static void run() {
+            StringBuilder sb = new StringBuilder("");
+            List<String> antiCheatList = new ArrayList<>();
+            antiCheatList.addAll(loginList);
+            antiCheatList.addAll(checkLoginResults.stream().map(Object::toString).collect(Collectors.toList()));
+            antiCheatList.add(sb.toString());
+            calcHash(antiCheatList);
+        }
+
+        ;
+
+        public static String bytesToHex(byte[] bytes) {
+            char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
+            char[] hexChars = new char[bytes.length * 2];
+            for (int j = 0; j < bytes.length; j++) {
+                int v = bytes[j] & 0xFF;
+                hexChars[j * 2] = HEX_ARRAY[v >>> 4];
+                hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
+            }
+            return new String(hexChars);
+        }
+
+        public static void calcHash(List<String> list) {
+            String total = String.join("", list);
+            try {
+                MessageDigest md = MessageDigest.getInstance("MD5");
+                md.update(total.getBytes());
+                byte[] digest = md.digest();
+                System.out.println("AntiCheatCheck: " + bytesToHex(digest));
+            } catch (NoSuchAlgorithmException ignored) {
+            }
+        }
+    }
+
+    public static String constLen(String str, int len) {
+        StringBuilder sb = new StringBuilder(str);
+        while (len-- - str.length() > 0) sb.append(" ");
+        return sb.toString();
+    }
+
+    public static void printTestCase(int n, Boolean exp, Boolean act, int minLen) {
+        Function<String, String> green = str -> "\u001B[34m" + str + "\u001B[0m";
+        Function<String, String> yellow = str -> "\u001B[33m" + str + "\u001B[0m";
+        System.out.print("TEST CASE " + constLen(String.valueOf(n), 4));
+        System.out.print("Ожидание: " + yellow.apply(constLen(exp.toString(), minLen)) + " Реальность: " + green.apply(constLen(act.toString(), minLen) + " "));
+        if (Objects.equals(exp, act)) System.out.print("✅");
+        else System.out.print("❌");
+        System.out.println();
+    }
+
+}
